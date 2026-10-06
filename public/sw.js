@@ -1,10 +1,9 @@
-const CACHE_NAME = 'llg-rlg-cache-v1';
+const CACHE_NAME = 'llg-rlg-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/favicon.svg',
-  '/icon.svg',
+  '/logo.png',
   '/icon-192.png',
   '/icon-512.png'
 ];
