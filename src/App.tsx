@@ -2,7 +2,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import {
   Cpu, Moon, Sun, Play, Trash2, BookOpen, Copy, Download,
   ChevronDown, ChevronUp, CheckCircle2, AlertCircle, Zap,
-  ArrowRight, Layers, GitBranch, BarChart3, RefreshCw, Code2
+  ArrowRight, Layers, GitBranch, BarChart3, RefreshCw, Code2,
+  AppWindow
 } from 'lucide-react';
 import { convertLLGtoRLG, testStrings as runTestStrings, type ConversionResult } from './lib/grammarEngine';
 import { StateDiagram } from './components/StateDiagram';
@@ -43,6 +44,42 @@ export default function App() {
   const [showHow, setShowHow]   = useState(false);
   const [copied, setCopied]     = useState('');
   const [converted, setConverted] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  // PWA Install prompt listener
+  useEffect(() => {
+    // Check if already running as standalone PWA
+    if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone) {
+      setIsInstalled(true);
+    }
+
+    const handler = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('appinstalled', () => {
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+    });
+
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      alert("To install, open this site in Google Chrome, Microsoft Edge, or Safari, and click 'Install' in your browser address bar.");
+      return;
+    }
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setIsInstalled(true);
+    }
+    setDeferredPrompt(null);
+  };
 
   // Apply theme class to <html>
   useEffect(() => {
@@ -143,6 +180,33 @@ export default function App() {
               <div className="pulse-dot" style={{ width: 6, height: 6, borderRadius: '50%', background: '#34d399' }} />
               L(G_LLG) = L(G_RLG)
             </div>
+
+            {!isInstalled && (
+              <button
+                className="btn-base"
+                onClick={handleInstallClick}
+                style={{
+                  padding: '0.375rem 0.75rem',
+                  borderRadius: '0.5rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  background: 'linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.2))',
+                  border: '1px solid rgba(99,102,241,0.4)',
+                  color: '#818cf8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+                title="Install this tool as a standalone Desktop / Mobile app"
+                id="install-pwa-btn"
+              >
+                <AppWindow size={14} />
+                <span>Install App</span>
+              </button>
+            )}
+
             <button
               className="btn-base btn-secondary"
               onClick={() => setDark(d => !d)}
