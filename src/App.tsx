@@ -151,14 +151,21 @@ export default function App() {
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{
-              width: 40, height: 40, borderRadius: '0.75rem',
-              background: 'linear-gradient(135deg,rgba(99,102,241,0.3),rgba(249,115,22,0.2))',
-              border: '1px solid rgba(99,102,241,0.4)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-            }}>
-              <Cpu size={20} color="#818cf8" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="LLG to RLG Logo"
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: '0.75rem',
+                objectFit: 'contain',
+                flexShrink: 0,
+                boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+                border: '1px solid var(--border)',
+                background: '#ffffff',
+                padding: '2px',
+              }}
+            />
             <div>
               <div style={{ fontSize: '1.1rem', fontWeight: 800, lineHeight: 1.2 }}>
                 <span className="text-gradient-main">LLG → RLG</span>
